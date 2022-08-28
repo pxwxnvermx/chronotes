@@ -9,15 +9,22 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@editorjs/editorjs": "^2.25.0",
+    "@editorjs/header": "^2.6.2",
+    "editorjs-parser": "^1.5.3",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "lodash": "^4.17.21",
     "next": "12.2.5",
+    "next-themes": "^0.2.0",
     "prettier": "^2.7.1",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-    "react-quill": "^2.0.0"
+    "react-icons": "^4.4.0"
   },
   "devDependencies": {
+    "@types/editorjs__header": "^2.6.0",
+    "@types/lodash": "^4.14.184",
     "@types/node": "18.7.11",
     "@types/react": "18.0.17",
     "@types/react-dom": "18.0.6",
