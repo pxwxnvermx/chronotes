@@ -1,10 +1,52 @@
 import { OutputBlockData } from "@editorjs/editorjs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { randomIdString } from "./helpers";
 import { NoteType } from "../types";
 
-export const useNotes = (initialNotes: NoteType[] = []) => {
-  const [notes, setNotes] = useState(initialNotes);
+export const useNotes = () => {
+  const initialNotes: NoteType[] = [
+    {
+      id: "9eekg9u2yu5gv7l5aon03b",
+      content: [
+        {
+          id: "eoeuzgkTib",
+          type: "header",
+          data: {
+            text: "Hello There&nbsp;👋🏻",
+            level: 1,
+          },
+        },
+        {
+          id: "NWYKepaiCS",
+          type: "paragraph",
+          data: {
+            text: "This is a paragraph. You can change it and add more text.",
+          },
+        },
+        {
+          id: "t4mWbiTYzI",
+          type: "paragraph",
+          data: {
+            text: "You can add more text here.",
+          },
+        },
+      ],
+      createdAt: 1661752434761,
+      updatedAt: 1661752434761,
+    },
+  ];
+
+  const [notes, setNotes] = useState<NoteType[]>(initialNotes);
+
+  useEffect((): void => {
+    const localNotes = JSON.parse(localStorage.getItem("notes") || "[]");
+    if (localNotes.length > 0) setNotes(localNotes);
+  }, []);
+
+  const _saveNotes = (notes: NoteType[]) => {
+    setNotes(notes);
+    localStorage.setItem("notes", JSON.stringify(notes));
+  };
 
   const addNote = (note: OutputBlockData[]) => {
     const newNotes = [
@@ -16,27 +58,31 @@ export const useNotes = (initialNotes: NoteType[] = []) => {
         updatedAt: Date.now(),
       },
     ].sort((a, b) => b.createdAt - a.createdAt);
-    setNotes(newNotes);
+
+    _saveNotes(newNotes);
   };
 
   const changeNote = (id: string) => {
     return (content: OutputBlockData[]) => {
-      setNotes(
-        notes.map((note) => {
-          if (note.id === id) {
-            note.content = content;
-            note.updatedAt = Date.now();
-          }
+      const newNotes = notes.map((note) => {
+        if (note.id === id) {
+          note.content = content;
+          note.updatedAt = Date.now();
+        }
 
-          return note;
-        }),
-      );
+        return note;
+      });
+
+      _saveNotes(newNotes);
     };
   };
 
   const deleteNote = (id: string) => {
     return () => {
-      setNotes(notes.filter((note) => note.id !== id));
+      const newNotes = notes.filter((note) => note.id !== id);
+
+      setNotes(newNotes);
+      localStorage.setItem("notes", JSON.stringify(newNotes));
     };
   };
 

@@ -1,30 +1,34 @@
 import type { NextPage } from "next";
 import dynamic from "next/dynamic";
 import { debounce } from "lodash";
-import { KeyboardEvent, useRef, useState } from "react";
+import { KeyboardEvent, useState } from "react";
 import type EditorJS from "@editorjs/editorjs";
 import { FiAlertTriangle, FiHeart } from "react-icons/fi";
 import { OutputBlockData } from "@editorjs/editorjs";
 
 import Note from "../components/Note";
 import { useNotes } from "../utils/use-notes";
-import Header from "../components/Navbar";
+import Header from "../components/Header";
+import Head from "next/head";
 const Editor = dynamic(() => import("../components/Editor"), {
   ssr: false,
 });
 
 const Home: NextPage = () => {
-  const { notes, addNote, changeNote, deleteNote } = useNotes([]);
+  const { notes, addNote, changeNote, deleteNote } = useNotes();
   const [content, setContent] = useState<OutputBlockData[]>([]);
 
   return (
     <div className="px-2 mx-2 md:max-w-screen-lg md:mx-auto">
+      <Head>
+        <title>CHRONotes</title>
+      </Head>
       <Header />
 
       <main>
         <div className="mt-2">
           <Editor
-            className="border rounded p-2 dark:border-gray-600"
+            className="p-2 border rounded dark:border-gray-600"
             value={content}
             holder="main-editor"
             onChange={debounce(async (api) => {
@@ -53,8 +57,8 @@ const Home: NextPage = () => {
             ))}
           </div>
         ) : (
-          <div className="mt-2 flex flex-col items-center justify-center h-96 border rounded dark:border-gray-600">
-            <FiAlertTriangle className="text-red-600 dark:fill-red-600 dark:text-white text-3xl mb-4" />
+          <div className="flex flex-col items-center justify-center mt-2 border rounded h-96 dark:border-gray-600">
+            <FiAlertTriangle className="mb-4 text-3xl text-red-600 dark:fill-red-600 dark:text-white" />
             <h1>No notes yet</h1>
             <h3>Add some notes to get started!</h3>
           </div>
@@ -62,11 +66,9 @@ const Home: NextPage = () => {
       </main>
 
       <footer>
-        <nav className="text-center mt-6 mb-3">
-          <h3 className="text-sm flex items-center justify-center">
-            Made with
-            <FiHeart className="ml-2 inline-block fill-red-600 text-red-600 text-xl animate-pulse" />
-          </h3>
+        <nav className="mt-6 mb-3 text-center">
+          <h3 className="inline-block text-sm">Made with</h3>
+          <FiHeart className="inline-block ml-1 text-xl text-red-600 fill-red-600 animate-pulse" />
           <h3>Chronotes</h3>
         </nav>
       </footer>
