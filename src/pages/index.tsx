@@ -1,52 +1,38 @@
 import type { NextPage } from "next";
-import dynamic from "next/dynamic";
-import { debounce } from "lodash";
-import { KeyboardEvent, useState } from "react";
-import type EditorJS from "@editorjs/editorjs";
-import { FiAlertTriangle, FiHeart } from "react-icons/fi";
-import { OutputBlockData } from "@editorjs/editorjs";
+import { FiAlertTriangle, FiPlus } from "react-icons/fi";
 
 import Note from "../components/Note";
 import { useNotes } from "../utils/use-notes";
 import Header from "../components/Header";
+import { Footer } from "../components/Footer";
 import Head from "next/head";
-const Editor = dynamic(() => import("../components/Editor"), {
-  ssr: false,
-});
 
 const Home: NextPage = () => {
   const { notes, addNote, changeNote, deleteNote } = useNotes();
-  const [content, setContent] = useState<OutputBlockData[]>([]);
 
   return (
     <div className="px-2 mx-2 md:max-w-screen-lg md:mx-auto">
       <Head>
+        <link rel="icon" href="./favicon.ico" />
         <title>CHRONotes</title>
       </Head>
+
       <Header />
 
       <main>
-        <div className="mt-2">
-          <Editor
-            className="p-2 border rounded dark:border-gray-600"
-            value={content}
-            holder="main-editor"
-            onChange={debounce(async (api) => {
-              const changeData = await api.saver.save();
-              setContent(changeData.blocks);
-            }, 300)}
-            addNote={(e: KeyboardEvent<HTMLDivElement>, editor: EditorJS) => {
-              if (e.ctrlKey && e.key === "Enter") {
-                addNote(content);
-                setContent([]);
-                editor.clear();
-              }
-            }}
-          />
-        </div>
         {notes.length ? (
           <div className="mt-2">
-            <h1 className="my-2 text-3xl">All Notes</h1>
+            <div className="flex flex-row items-center">
+              <h1 className="my-2 text-3xl">All Notes</h1>
+              <button
+                className="ml-auto p-2 text-xl border-0 rounded-full text-gray-50 bg-gray-900 dark:bg-gray-50 dark:text-gray-900 hover:bg-slate-600 dark:hover:bg-slate-400"
+                type="button"
+                onClick={() => addNote([])}
+              >
+                <FiPlus />
+              </button>
+            </div>
+
             {notes.map((note) => (
               <Note
                 note={note}
@@ -61,17 +47,18 @@ const Home: NextPage = () => {
             <FiAlertTriangle className="mb-4 text-3xl text-red-600 dark:fill-red-600 dark:text-white" />
             <h1>No notes yet</h1>
             <h3>Add some notes to get started!</h3>
+            <button
+              className="p-2 text-xl border-0 rounded-full text-gray-50 bg-gray-900 dark:bg-gray-50 dark:text-gray-900 hover:bg-slate-600 dark:hover:bg-slate-400"
+              type="button"
+              onClick={() => addNote([])}
+            >
+              <FiPlus />
+            </button>
           </div>
         )}
       </main>
 
-      <footer>
-        <nav className="mt-6 mb-3 text-center">
-          <h3 className="inline-block text-sm">Made with</h3>
-          <FiHeart className="inline-block ml-1 text-xl text-red-600 fill-red-600 animate-pulse" />
-          <h3>Chronotes</h3>
-        </nav>
-      </footer>
+      <Footer />
     </div>
   );
 };

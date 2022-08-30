@@ -1,5 +1,4 @@
 import "../styles/globals.css";
-import "../styles/github-markdown.css";
 import type { AppProps } from "next/app";
 import { ThemeProvider } from "next-themes";
 

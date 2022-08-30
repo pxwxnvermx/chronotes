@@ -16,7 +16,7 @@ const Header = () => {
           <div className="flex justify-end">
             <button
               className="p-2 text-xl border-0 rounded-full text-gray-50 bg-gray-900 dark:bg-gray-50 dark:text-gray-900 hover:bg-slate-600 dark:hover:bg-slate-400"
-              onClick={(e) => {
+              onClick={() => {
                 setTheme(theme === "light" ? "dark" : "light");
               }}
             >

@@ -1,12 +1,13 @@
 import { useRef, useEffect, KeyboardEvent } from "react";
-import EditorJS, { EditorConfig, OutputBlockData } from "@editorjs/editorjs";
+import EditorJS, { API, OutputBlockData } from "@editorjs/editorjs";
 import Header from "@editorjs/header";
 
-interface Props extends EditorConfig {
+interface Props {
   addNote?: (e: KeyboardEvent<HTMLDivElement>, editor: EditorJS) => void;
   className?: string;
   value: OutputBlockData[];
   holder: string;
+  onChange: (api: API, e: any) => void;
 }
 
 const Editor = ({ onChange, holder, value, addNote, className }: Props) => {
@@ -36,15 +37,13 @@ const Editor = ({ onChange, holder, value, addNote, className }: Props) => {
   }, []);
 
   return (
-    <>
-      <div
-        id={holder}
-        className={className}
-        onKeyDown={(e) => {
-          if (addNote && editorRef.current) addNote(e, editorRef.current);
-        }}
-      />
-    </>
+    <div
+      id={holder}
+      className={className}
+      onKeyDown={(e) => {
+        if (addNote && editorRef.current) addNote(e, editorRef.current);
+      }}
+    />
   );
 };
 

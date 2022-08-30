@@ -29,11 +29,10 @@ const Note = ({ note, deleteNote, changeNote }: Props) => {
   return (
     <div className="px-4 py-2 mb-2 border rounded dark:border-gray-600">
       <div className="mb-2">
-        {/* <div className="markdown-body" ref={contentRef} /> */}
         <Editor
           holder={note.id}
           value={note.content}
-          onChange={debounce(async (api) => {
+          onChange={debounce(async (api, e) => {
             setSaving(true);
             const changeData = await api.saver.save();
             changeNote(changeData.blocks);
@@ -57,8 +56,9 @@ const Note = ({ note, deleteNote, changeNote }: Props) => {
         </span>
 
         {saving && (
-          <div title="Saving...">
-            Saving <AiOutlineLoading className="animate-spin inline-block" />{" "}
+          <div className="flex items-center" title="Saving...">
+            Saving{" "}
+            <AiOutlineLoading className="ml-1 animate-spin inline-block" />{" "}
           </div>
         )}
 
