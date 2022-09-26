@@ -1,4 +1,3 @@
-import { OutputBlockData } from "@editorjs/editorjs";
 import { useEffect, useState } from "react";
 import { randomIdString } from "./helpers";
 import { NoteType } from "../types";
@@ -6,33 +5,44 @@ import { NoteType } from "../types";
 export const useNotes = () => {
   const initialNotes: NoteType[] = [
     {
-      id: "9eekg9u2yu5gv7l5aon03b",
-      content: [
-        {
-          id: "eoeuzgkTib",
-          type: "header",
-          data: {
-            text: "Hello There&nbsp;👋🏻",
-            level: 1,
+      id: randomIdString(),
+      content: {
+        type: "doc",
+        content: [
+          {
+            type: "heading",
+            attrs: {
+              level: 1,
+            },
+            content: [
+              {
+                type: "text",
+                text: "Hello There 👋🏻",
+              },
+            ],
           },
-        },
-        {
-          id: "NWYKepaiCS",
-          type: "paragraph",
-          data: {
-            text: "This is a paragraph. You can change it and add more text.",
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "Now you can start taking notes!",
+              },
+            ],
           },
-        },
-        {
-          id: "t4mWbiTYzI",
-          type: "paragraph",
-          data: {
-            text: "You can add more text here.",
+          {
+            type: "paragraph",
+            content: [
+              {
+                type: "text",
+                text: "You can also delete a note by clicking the delete button.",
+              },
+            ],
           },
-        },
-      ],
-      createdAt: 1661752434761,
-      updatedAt: 1661752434761,
+        ],
+      },
+      createdAt: 1662190997263,
+      updatedAt: 1662191325109,
     },
   ];
 
@@ -48,12 +58,15 @@ export const useNotes = () => {
     localStorage.setItem("notes", JSON.stringify(notes));
   };
 
-  const addNote = (note: OutputBlockData[]) => {
+  const addNote = (note: any) => {
     const newNotes = [
       ...notes,
       {
         id: randomIdString(),
-        content: note,
+        content: {
+          type: "doc",
+          content: note,
+        },
         createdAt: Date.now(),
         updatedAt: Date.now(),
       },
@@ -63,7 +76,7 @@ export const useNotes = () => {
   };
 
   const changeNote = (id: string) => {
-    return (content: OutputBlockData[]) => {
+    return (content: any) => {
       const newNotes = notes.map((note) => {
         if (note.id === id) {
           note.content = content;

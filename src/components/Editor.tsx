@@ -1,50 +1,31 @@
-import { useRef, useEffect, KeyboardEvent } from "react";
-import EditorJS, { API, OutputBlockData } from "@editorjs/editorjs";
-import Header from "@editorjs/header";
+import { useEditor, EditorContent } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
+import { debounce } from "lodash";
 
 interface Props {
-  addNote?: (e: KeyboardEvent<HTMLDivElement>, editor: EditorJS) => void;
   className?: string;
-  value: OutputBlockData[];
-  holder: string;
-  onChange: (api: API, e: any) => void;
+  value?: any;
+  changeNote: (content: any) => void;
 }
 
-const Editor = ({ onChange, holder, value, addNote, className }: Props) => {
-  const holderRef = useRef(holder);
-  const editorRef = useRef<EditorJS | null>(null);
-
-  useEffect(() => {
-    const editorInstance = new EditorJS({
-      holder: holderRef.current,
-      tools: {
-        header: Header,
+const Editor = ({ value, changeNote, className }: Props) => {
+  const editor = useEditor(
+    {
+      extensions: [StarterKit],
+      content: value,
+      onUpdate: debounce(({ editor }) => {
+        changeNote(editor.getJSON());
+      }, 300),
+      editorProps: {
+        attributes: {
+          class: "outline-none",
+        },
       },
-      data: {
-        time: Date.now(),
-        blocks: value,
-      },
-      onChange: onChange,
-      placeholder: "Write your story...",
-      minHeight: 0,
-    });
-
-    editorRef.current = editorInstance;
-
-    return () => {
-      editorRef?.current?.destroy && editorRef.current.destroy();
-    };
-  }, []);
-
-  return (
-    <div
-      id={holder}
-      className={className}
-      onKeyDown={(e) => {
-        if (addNote && editorRef.current) addNote(e, editorRef.current);
-      }}
-    />
+    },
+    [],
   );
+
+  return <EditorContent className={className} editor={editor} />;
 };
 
 export default Editor;

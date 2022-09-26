@@ -1,73 +1,65 @@
-import { useRef, useEffect, useState } from "react";
-import { NoteType as NoteType } from "../types";
+import { useState } from "react";
+import { NoteType } from "../types";
 import { FaTrash } from "react-icons/fa";
 import { AiOutlineLoading } from "react-icons/ai";
-import dynamic from "next/dynamic";
-const Editor = dynamic(() => import("../components/Editor"), {
-  ssr: false,
-});
-import { debounce } from "lodash";
-
-import { convertDataToHtml } from "../utils/editorHelpers";
-import { OutputBlockData } from "@editorjs/editorjs";
+import Editor from "../components/Editor";
 
 type Props = {
   note: NoteType;
-  changeNote: (content: OutputBlockData[]) => void;
+  changeNote: (content: any) => void;
   deleteNote: () => void;
 };
 
 const Note = ({ note, deleteNote, changeNote }: Props) => {
-  const contentRef = useRef<HTMLDivElement | null>(null);
   const [saving, setSaving] = useState(false);
 
-  useEffect(() => {
-    if (contentRef.current)
-      contentRef.current.innerHTML = convertDataToHtml(note.content);
-  }, [note.content]);
-
   return (
-    <div className="px-4 py-2 mb-2 border rounded dark:border-gray-600">
+    <div className="px-4 py-2 mb-2 border rounded border-zinc-200 dark:border-zinc-800">
       <div className="mb-2">
         <Editor
-          holder={note.id}
           value={note.content}
-          onChange={debounce(async (api, e) => {
+          changeNote={(content: any) => {
             setSaving(true);
-            const changeData = await api.saver.save();
-            changeNote(changeData.blocks);
-            setTimeout(() => setSaving(false), 500);
-          }, 300)}
+            changeNote(content);
+            setTimeout(() => {
+              setSaving(false);
+            }, 1000);
+          }}
+          className="px-4 py-2"
         />
       </div>
 
-      <hr className="dark:border-gray-600" />
-      <div className="flex flex-row items-center mt-2 text-sm">
-        <span className="flex-grow">
-          #{note.id}{" "}
-          {new Date(note.createdAt).toLocaleString("en-us", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-            hour: "numeric",
-            minute: "numeric",
-            second: "numeric",
-          })}
-        </span>
+      <hr className="border-zinc-200 dark:border-zinc-800" />
+      <div className="md:flex flex-row items-center mt-2 text-sm">
+        <div className="flex flex-col w-full ml-2">
+          <div>#{note.id} </div>
 
-        {saving && (
-          <div className="flex items-center" title="Saving...">
-            Saving{" "}
-            <AiOutlineLoading className="ml-1 animate-spin inline-block" />{" "}
+          <div>
+            {new Date(note.createdAt).toLocaleString("en-us", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "numeric",
+              minute: "numeric",
+            })}
           </div>
-        )}
+        </div>
 
-        <button
-          className="p-2 text-sm text-red-600 rounded-full hover:bg-gray-200"
-          onClick={deleteNote}
-        >
-          <FaTrash className="text-lg" />
-        </button>
+        <div className={saving ? "visible" : "invisible"}>
+          <div className="flex flex-row">
+            Saving
+            <AiOutlineLoading className="mx-2 animate-spin inline-block" />
+          </div>
+        </div>
+
+        <div>
+          <button
+            className="p-2 text-sm text-red-600 rounded-full hover:bg-gray-200 transition-color duration-300"
+            onClick={deleteNote}
+          >
+            <FaTrash className="text-lg" />
+          </button>
+        </div>
       </div>
     </div>
   );
