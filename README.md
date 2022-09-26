@@ -4,5 +4,7 @@
 
 ## Todo
 
-- [ ] Saving notes to Database/LocalStorage
-- [ ] Editor js blocks on editing notes
+- [x] Saving notes to Database/LocalStorage
+- [x] Editor js blocks on editing notes
+
+
